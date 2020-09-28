@@ -19,6 +19,12 @@ namespace sparrow {
 	//Global Forward Declartions
 	template<typename T>
 	class Vector2;
+	template<typename T>
+	class Vector3;
+	template<typename T>
+	class Point2;
+	template<typename T>
+	class Point3;
 #ifdef FLOAT_AS_DOUBLE
 	typedef double Float;
 #else
