@@ -25,10 +25,19 @@ namespace sparrow {
 	class Point2;
 	template<typename T>
 	class Point3;
+	template<typename T>
+	class Normal3;
+	class Ray;
 #ifdef FLOAT_AS_DOUBLE
 	typedef double Float;
 #else
 	typedef float Float;
 #endif // FLOAT_AS_DOUBLE
+
+
+#ifdef _MSC_VER
+#define MaxFloat std::numeric_limits<Float>::max()
+#define Infinity std::numeric_limits<Float>::infinity()
+#endif // _MSC_VER
 
 }

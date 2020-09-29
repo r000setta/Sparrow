@@ -618,6 +618,24 @@ namespace sparrow {
 
 	using Normal3f = Normal3<Float>;
 
+	class Ray {
+	private:
+		Point3f o;
+		Vector3f d;
+		mutable Float tMax;
+		Float time;
+	public:
+		Ray() :tMax(Infinity), time(0.f) {}
+		Ray(const Point3f& o, const Vector3f& d, Float tMax = Infinity, Float time = 0.f)
+			:o(o), d(d), tMax(tMax), time(time) {}
+		Point3f operator()(Float t) const { return o + d * t; }
+		bool HasNaNs() const { return (o.HasNaNs() || d.HasNaNs() || isNaN(tMax)); }
+		friend std::ostream& operator<<(std::ostream& os, const Ray& r) {
+			os << "[o=" << r.o << ",d=" << r.d << ",tMax=" << r.tMax << ",time=" << r.time << "]";
+			return os;
+		}
+	};
+
 	//Vector3
 	template<typename T>
 	Vector3<T> Abs(const Vector3<T>& v) {
