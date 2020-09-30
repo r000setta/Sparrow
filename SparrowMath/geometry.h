@@ -130,7 +130,7 @@ namespace sparrow {
 			DCHECK(!HasNaNs());
 		}
 
-		Vector3<T>(const Normal3<T>& n) : x(n.x), y(n.y), z(n.z) {
+		explicit Vector3<T>(const Normal3<T>& n) : x(n.x), y(n.y), z(n.z) {
 			DCHECK(!n.HasNaNs());
 		}
 
@@ -362,7 +362,6 @@ namespace sparrow {
 		}
 		bool operator==(const Point2<T>& p) const { return x == p.x && y == p.y; }
 		bool operator!=(const Point2<T>& p) const { return x != p.x || y != p.y; }
-		
 	};
 
 	template<typename T>
@@ -619,7 +618,7 @@ namespace sparrow {
 	using Normal3f = Normal3<Float>;
 
 	class Ray {
-	private:
+	public:
 		Point3f o;
 		Vector3f d;
 		mutable Float tMax;
@@ -636,7 +635,100 @@ namespace sparrow {
 		}
 	};
 
+	template<typename T>
+	class Bounds3 {
+	public:
+		Point3<T> pMin, pMax;
+		Bounds3() {
+			T minNum = std::numeric_limits<T>::lowest();
+			T maxNum = std::numeric_limits<T>::max();
+			pMin = Point3<T>(maxNum, maxNum, maxNum);
+			pMax = Point3<T>(minNum, minNum, minNum);
+		}
+
+		explicit Bounds3(const Point3<T>& p) :pMin(p), pMax(p) {}
+		Bounds3(const Point3<T>& p1, const Point3<T>& p2) :
+			pMin(std::min(p1.x, p2.x), std::min(p1.y, p2.y),
+				std::min(p1.z, p2.z)),
+			pMax(std::max(p1.x, p2.x), std::max(p1.y, p2.y),
+				std::max(p1.z, p2.z)) {}
+		const Point3<T>& operator[](int i) const {
+			DCHECK(i == 1 || i == 0);
+			if (i == 0) return pMin;
+			return pMax;
+		}
+
+		bool operator==(const Bounds3<T>& b) const {
+			return b.pMin == pMin && b.pMax == pMax;
+		}
+		bool operator!=(const Bounds3<T>& b) const {
+			return b.pMax != pMax || b.pMin != pMin;
+		}
+
+		Point3<T> Corner(int corner) const {
+			DCHECK(corner >= 0 && corner < 8);
+			return Point3<T>((*this)[(corner & 1)].x,
+				(*this)[(corner & 2) ? 1 : 0].y,
+				(*this)[(corner & 4) ? 1 : 0].z);
+		}
+
+		Vector3<T> Diagonal() const { return pMax - pMin; }
+		T SurfaceArea() const {
+			Vector3<T> d = Diagonal();
+			return 2 * (d.x * d.y + d.x * d.z + d.y * d.z);
+		}
+
+		T Volume() const {
+			Vector3<T> d = Diagonal();
+			return d.x * d.y * d.z;
+		}
+		int MaximumExtent() const {
+			Vector3<T> d = Diagonal();
+			if (d.x > d.y && d.x > d.z)
+				return 0;
+			else if (d.y > d.z)
+				return 1;
+			else
+				return 2;
+		}
+		Point3<T> Lerp(const Point3f& t) const {
+			return Point3<T>(Lerp(t.x, pMin.x, pMax.x),
+				Lerp(t.y, pMin.y, pMax.y),
+				Lerp(t.z, pMin.z, pMax.z));
+		}
+		Vector3<T> Offset(const Point3<T>& p) const {
+			Vector3<T> o = p - pMin;
+			if (pMax.x > pMin.x) o.x /= pMax.x - pMin.x;
+			if (pMax.y > pMin.y) o.y /= pMax.y - pMin.y;
+			if (pMax.z > pMin.z) o.z /= pMax.z - pMin.z;
+			return o;
+		}
+		void BoundingSphere(Point3<T>* center, Float* radius) const {
+			*center = (pMin + pMax) / 2;
+			*radius = Inside(*center, *this) ? Distance(*center, pMax) : 0;
+		}
+		template <typename U>
+		explicit operator Bounds3<U>() const {
+			return Bounds3<U>((Point3<U>)pMin, (Point3<U>)pMax);
+		}
+		/*bool IntersectP(const Ray& ray, Float* hitt0 = nullptr,
+			Float* hitt1 = nullptr) const;
+		inline bool IntersectP(const Ray& ray, const Vector3f& invDir,
+			const int dirIsNeg[3]) const;*/
+		friend std::ostream& operator<<(std::ostream& os, const Bounds3<T>& b) {
+			os << "[ " << b.pMin << " - " << b.pMax << " ]";
+			return os;
+		}
+	};
+
+	using Bounds3f = Bounds3<Float>;
+
 	//Vector3
+	template <typename T, typename U>
+	inline Vector3<T> operator*(U s, const Vector3<T>& v) {
+		return v * s;
+	}
+
 	template<typename T>
 	Vector3<T> Abs(const Vector3<T>& v) {
 		return Vector3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
@@ -675,7 +767,7 @@ namespace sparrow {
 		DCHECK(!v1.HasNaNs() && !v2.HasNaNs());
 		double v1x = v1.x, v1y = v1.y, v1z = v1.z;
 		double v2x = v2.x, v2y = v2.y, v2z = v2.z;
-		return Vector3<T>((v1y * v2z) - (v1z * v2y), (v1z * v2x) - (v1x * v2z),
+		return Vector3<T>((v1y * v2z) - (v1z * v2y), (v1z * v2x) - (v1x * v2z));
 	}
 
 	template<typename T>
@@ -741,11 +833,6 @@ namespace sparrow {
 	template<typename T,typename U>
 	inline Vector2<T> operator*(U f, const Vector2<T>& v) {
 		return v * f;
-	}
-
-	template<typename T>
-	Vector2<T> Abs(const Vector2<T>& v) {
-		return Vector2<T>(std::abs(v.x), std::abs(v.y));
 	}
 
 	//Point
@@ -914,4 +1001,22 @@ namespace sparrow {
 	Normal3<T> Abs(const Normal3<T>& v) {
 		return Normal3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
 	}
+
+	//Bounds3
+	template <typename T>
+	Bounds3<T> Union(const Bounds3<T>& b, const Point3<T>& p) {
+		Bounds3<T> ret;
+		ret.pMin = Min(b.pMin, p);
+		ret.pMax = Max(b.pMax, p);
+		return ret;
+	}
+
+	template <typename T>
+	Bounds3<T> Union(const Bounds3<T>& b1, const Bounds3<T>& b2) {
+		Bounds3<T> ret;
+		ret.pMin = Min(b1.pMin, b2.pMin);
+		ret.pMax = Max(b1.pMax, b2.pMax);
+		return ret;
+	}
+
 }

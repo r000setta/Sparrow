@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "glog/logging.h"
 
 #pragma warning(disable : 4305)  // double constant assigned to float
@@ -28,6 +29,10 @@ namespace sparrow {
 	template<typename T>
 	class Normal3;
 	class Ray;
+	template<typename T>
+	class Bounds3;
+	class Matrix4x4;
+	class Transform;
 #ifdef FLOAT_AS_DOUBLE
 	typedef double Float;
 #else
@@ -38,6 +43,10 @@ namespace sparrow {
 #ifdef _MSC_VER
 #define MaxFloat std::numeric_limits<Float>::max()
 #define Infinity std::numeric_limits<Float>::infinity()
+#define MachineEpsilon (std::numeric_limits<Float>::epsilon()*0.5)
 #endif // _MSC_VER
 
+	inline Float gamma(int n) {
+		return (n * MachineEpsilon) / (1 - n * MachineEpsilon);
+	}
 }

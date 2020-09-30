@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClInclude Include="geometry.h" />
     <ClInclude Include="sparrow.h" />
+    <ClInclude Include="transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="transform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
