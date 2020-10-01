@@ -242,6 +242,8 @@ namespace sparrow {
 	using Vector3f = Vector3<Float>;
 	using Vector3i = Vector3<int>;
 
+	using Color = Vector3f;
+
 	template<typename T>
 	class Point2 {
 	public:

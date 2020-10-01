@@ -19,6 +19,9 @@
     <Filter Include="头文件\accelerators">
       <UniqueIdentifier>{fa53b308-5714-4dd3-888c-9b6a77c5fe13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\core">
+      <UniqueIdentifier>{f72fb49f-e731-413b-a430-9fc3220600e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry.h">
@@ -39,6 +42,9 @@
     <ClInclude Include="sphere.h">
       <Filter>头文件\shapes</Filter>
     </ClInclude>
+    <ClInclude Include="primitive.h">
+      <Filter>头文件\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="geometry.cpp">
@@ -48,6 +54,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="sphere.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="interaction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

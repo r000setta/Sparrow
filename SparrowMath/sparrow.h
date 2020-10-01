@@ -36,6 +36,8 @@ namespace sparrow {
 	class Shape;
 	struct Interaction;
 	class SurfaceInteraction;
+	class Primitive;
+
 #ifdef FLOAT_AS_DOUBLE
 	typedef double Float;
 #else

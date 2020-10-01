@@ -14,10 +14,10 @@ namespace sparrow {
             thetaMax(std::acos(Clamp(std::max(zMin, zMax) / radius, -1, 1))),
             phiMax(Radians(Clamp(phiMax, 0, 360))) {}
         Bounds3f ObjectBound() const;
-        virtual bool Intersect(const Ray& ray, Float* tHit, SurfaceInteraction* isect,
-            bool testAlphaTexture) const override;
-        virtual bool IntersectP(const Ray& ray, bool testAlphaTexture) const override;
-        virtual Float Area() const override;
+        bool Intersect(const Ray& ray, Float* tHit, SurfaceInteraction* isect,
+            bool testAlphaTexture) const;
+        bool IntersectP(const Ray& ray, bool testAlphaTexture) const ;
+        Float Area() const ;
 	private:
 		const Float radius;
 		const Float zMin, zMax;

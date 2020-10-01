@@ -8,7 +8,7 @@ namespace sparrow {
 
 	bool Sphere::Intersect(const Ray& ray, Float* tHit, SurfaceInteraction* isect, bool testAlphaTexture) const
 	{
-		
+		return false;
 	}
 
 	bool Sphere::IntersectP(const Ray& ray, bool testAlphaTexture) const
