@@ -31,8 +31,11 @@ namespace sparrow {
 	class Ray;
 	template<typename T>
 	class Bounds3;
-	class Matrix4x4;
+	struct Matrix4x4;
 	class Transform;
+	class Shape;
+	struct Interaction;
+	class SurfaceInteraction;
 #ifdef FLOAT_AS_DOUBLE
 	typedef double Float;
 #else
@@ -46,7 +49,23 @@ namespace sparrow {
 #define MachineEpsilon (std::numeric_limits<Float>::epsilon()*0.5)
 #endif // _MSC_VER
 
+	static constexpr Float Pi = 3.14159265358979323846;
+
 	inline Float gamma(int n) {
 		return (n * MachineEpsilon) / (1 - n * MachineEpsilon);
+	}
+
+	template<typename T,typename U,typename V>
+	inline T Clamp(T val, U low, V high) {
+		if (val < low)
+			return low;
+		else if (val > high)
+			return high;
+		else
+			return val;
+	}
+
+	inline Float Radians(Float deg) {
+		return (Pi / 180) * deg;
 	}
 }

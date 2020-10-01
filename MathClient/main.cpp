@@ -1,7 +1,8 @@
 #include "geometry.h"
 using namespace std;
 using namespace sparrow;
-int main() {
+
+void VectorTest() {
 	Vector3f n(1.0f, 0.0f, 0.0f);
 	Vector3f u(1.0f, 2.0f, 3.0f);
 	Vector3f v(-2.0f, 1.0f, -3.0f);
@@ -25,4 +26,8 @@ int main() {
 	cout << "d=" << d << endl;
 	cout << "s=" << s << endl;
 	cout << "e=" << e << endl;
+}
+
+int main() {
+	
 }

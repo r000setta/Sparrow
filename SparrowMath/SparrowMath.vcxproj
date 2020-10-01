@@ -20,11 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry.h" />
+    <ClInclude Include="interaction.h" />
+    <ClInclude Include="shape.h" />
     <ClInclude Include="sparrow.h" />
+    <ClInclude Include="sphere.h" />
     <ClInclude Include="transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="sphere.cpp" />
     <ClCompile Include="transform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

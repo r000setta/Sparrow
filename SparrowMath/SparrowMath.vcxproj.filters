@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\shapes">
+      <UniqueIdentifier>{936b3720-fdeb-431c-b800-446429f36ad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\accelerators">
+      <UniqueIdentifier>{fa53b308-5714-4dd3-888c-9b6a77c5fe13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry.h">
@@ -24,12 +30,24 @@
     <ClInclude Include="transform.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="shape.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="interaction.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>头文件\shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="geometry.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="transform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="sphere.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
