@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <random>
 #include "glog/logging.h"
 
 #pragma warning(disable : 4305)  // double constant assigned to float
@@ -37,7 +38,7 @@ namespace sparrow {
 	struct Interaction;
 	class SurfaceInteraction;
 	class Primitive;
-
+#define FLOAT_AS_DOUBLE
 #ifdef FLOAT_AS_DOUBLE
 	typedef double Float;
 #else
@@ -69,5 +70,15 @@ namespace sparrow {
 
 	inline Float Radians(Float deg) {
 		return (Pi / 180) * deg;
+	}
+
+	inline Float RandomFloat() {
+		static std::uniform_real_distribution<Float> dis(0.0, 1.0);
+		static std::mt19937 gen;
+		return dis(gen);
+	}
+
+	inline Float RandomFloat(Float min,Float max) {
+		return min + (max - min) * RandomFloat();
 	}
 }
