@@ -4,7 +4,19 @@
 
 using namespace sparrow;
 
+bool HitSphere(const Point3f& center, Float radius, const RRay& r) {
+    Vector3f oc = r.origin() - center;
+    auto a = Dot(r.direction(), r.direction());
+    auto b = 2.0 * Dot(r.direction(), oc);
+    auto c = Dot(oc, oc) - radius * radius;
+    auto dis = b * b - 4 * a * c;
+    return dis > 0;
+}
+
 Color RayColor(const RRay& r) {
+    if (HitSphere(Point3f(0, 0, -1), 0.5, r)) {
+        return Color(1, 0, 0);
+    }
     auto unitDirection = Normalize(r.direction());
     auto t = 0.5 * (unitDirection.y + 1.0);
     return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
