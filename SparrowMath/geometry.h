@@ -1021,4 +1021,24 @@ namespace sparrow {
 		return ret;
 	}
 
+
+
+	//Add
+	template<typename T>
+	inline Vector3<T> RandomVec3() {
+		return Vector3<T>(RandomFloat(), RandomFloat(), RandomFloat());
+	}
+
+	template<typename T>
+	inline Vector3<T> RandomVec3(Float min,Float max) {
+		return Vector3<T>(RandomFloat(min, max), RandomFloat(min, max), RandomFloat(min, max));
+	}
+
+	template<typename T>
+	Vector3<T> RandomInUnitSphere(){
+		auto a = RandomFloat(0, 2 * Pi);
+		auto z = RandomFloat(-1, 1);
+		auto r = sqrt(1 - z * z);
+		return Vector3<T>(r * cos(a), r * sin(a), z);
+	}
 }
