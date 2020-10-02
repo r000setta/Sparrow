@@ -187,6 +187,7 @@ namespace sparrow {
 		Vector3<T> operator*(U s) const {
 			return Vector3<T>(s * x, s * y, s * z);
 		}
+
 		template <typename U>
 		Vector3<T>& operator*=(U s) {
 			DCHECK(!isNaN(s));
@@ -1035,10 +1036,20 @@ namespace sparrow {
 	}
 
 	template<typename T>
-	Vector3<T> RandomInUnitSphere(){
+	inline Vector3<T> RandomUnitVector(){
 		auto a = RandomFloat(0, 2 * Pi);
 		auto z = RandomFloat(-1, 1);
 		auto r = sqrt(1 - z * z);
 		return Vector3<T>(r * cos(a), r * sin(a), z);
+	}
+
+	template<typename T>
+	inline Vector3<T> Reflect(const Vector3<T>& v, const Vector3<T>& n) {
+		return v - 2 * Dot(v, n) * n;
+	}
+
+	template<typename T>
+	inline Vector3<T> EleDot(const Vector3<T>& v, const Vector3<T>& u) {
+		return Vector3<T>(v.x * u.x, v.y * u.y, v.z * u.z);
 	}
 }

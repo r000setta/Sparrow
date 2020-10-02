@@ -1,12 +1,19 @@
 #pragma once
 
 #include "ray.h"
+#include "material.h"
+#include <memory>
+
+using std::shared_ptr;
 
 namespace sparrow {
+	class Material;
+
 	struct HitRecord {
 		Point3f p;
 		Vector3f normal;
 		Float t;
+		shared_ptr<Material> matPtr;
 		bool frontFace;
 
 		inline void setFrontNormal(const RRay& r, const Vector3f& outward) {
