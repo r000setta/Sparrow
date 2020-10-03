@@ -7,6 +7,7 @@
 #include "material.h"
 #include "lambertian.h"
 #include "metal.h"
+#include "dielectric.h"
 
 using namespace sparrow;
 
@@ -40,13 +41,16 @@ int main() {
 
     auto matGround=make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
     auto matCenter=make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
-    auto matLeft=make_shared<Metal>(Color(0.8, 0.8, 0.8),0.3);
+    //auto matCenter=make_shared<Dielectric>(1.5);
+    //auto matLeft=make_shared<Metal>(Color(0.8, 0.8, 0.8),0.3);
+    auto matLeft=make_shared<Dielectric>(1.5);
     auto matRight=make_shared<Metal>(Color(0.8, 0.6, 0.2),1.0);
 
     HittableList world;
     world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, matGround));
     world.add(make_shared<Sphere>(Point3f(0.0, 0.0, -1.0), 0.5, matCenter));
     world.add(make_shared<Sphere>(Point3f(-1.0,0.0, -1.0), 0.5, matLeft));
+    world.add(make_shared<Sphere>(Point3f(-1.0,0.0, -1.0), -0.4, matLeft));
     world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, matRight));
 
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";

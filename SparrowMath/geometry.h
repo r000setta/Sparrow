@@ -1062,4 +1062,12 @@ namespace sparrow {
 			return p;
 		}
 	}
+
+	template<typename T>
+	Vector3<T> Refract(const Vector3<T>& uv, const Vector3<T>& n, Float etai) {
+		auto cosTheta = Dot(-uv, n);
+		Vector3<T> rOutPerp = etai * (uv + cosTheta * n);
+		Vector3<T> rOutParallel = -sqrt(fabs(1.0 - rOutPerp.LengthSquared())) * n;
+		return rOutPerp + rOutParallel;
+	}
 }
