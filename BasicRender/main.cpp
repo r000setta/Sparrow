@@ -40,8 +40,8 @@ int main() {
 
     auto matGround=make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
     auto matCenter=make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
-    auto matLeft=make_shared<Metal>(Color(0.8, 0.8, 0.8));
-    auto matRight=make_shared<Metal>(Color(0.8, 0.6, 0.2));
+    auto matLeft=make_shared<Metal>(Color(0.8, 0.8, 0.8),0.3);
+    auto matRight=make_shared<Metal>(Color(0.8, 0.6, 0.2),1.0);
 
     HittableList world;
     world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, matGround));

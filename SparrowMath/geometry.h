@@ -1052,4 +1052,14 @@ namespace sparrow {
 	inline Vector3<T> EleDot(const Vector3<T>& v, const Vector3<T>& u) {
 		return Vector3<T>(v.x * u.x, v.y * u.y, v.z * u.z);
 	}
+
+	template<typename T>
+	Vector3<T> RandomInUnitSphere() {
+		while (true) {
+			Vector3<T> p = RandomVec3<T>(-1, 1);
+			if (p.LengthSquared() >= 1)
+				continue;
+			return p;
+		}
+	}
 }
