@@ -8,6 +8,7 @@
 #include "lambertian.h"
 #include "metal.h"
 #include "dielectric.h"
+#include "moving_sphere.h"
 
 using namespace sparrow;
 
@@ -40,10 +41,10 @@ int main() {
     Point3f lookat(0, 0, -1);
     Vector3f vup(0, 1, 0);
     auto distToFocus = (lookfrom - lookat).Length();
-    auto aperture = 2.0;
+    auto aperture = 0.1;
 
     // Camera
-    BCamera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, distToFocus);
+    BCamera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, distToFocus, 0.0, 2.0);
 
     auto matGround=make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
     auto matCenter=make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
@@ -53,11 +54,13 @@ int main() {
     auto matRight=make_shared<Metal>(Color(0.8, 0.6, 0.2),1.0);
 
     HittableList world;
+    Point3f cen(1.0, 0.0, -1.0);
+    auto cen2 = cen + Vector3f(0, RandomFloat(0, .5), 0);
     world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, matGround));
     world.add(make_shared<Sphere>(Point3f(0.0, 0.0, -1.0), 0.5, matCenter));
     world.add(make_shared<Sphere>(Point3f(-1.0,0.0, -1.0), 0.5, matLeft));
-    world.add(make_shared<Sphere>(Point3f(-1.0,0.0, -1.0), -0.4, matLeft));
-    world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, matRight));
+    //world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, matRight));
+    world.add(make_shared<MovingSphere>(cen, cen2, 0.0, 1.0, 0.2, matRight));
 
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 

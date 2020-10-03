@@ -11,7 +11,7 @@ namespace sparrow {
 		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered)
 			const override {
 			Vector3f scatterDirection = rec.normal + RandomUnitVector<Float>();
-			scattered = RRay(rec.p, scatterDirection);
+			scattered = RRay(rec.p, scatterDirection, rIn.time());
 			attenuation = albedo;
 			return true;
 		}
