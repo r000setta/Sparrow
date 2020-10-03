@@ -31,13 +31,19 @@ Color RayColor(const RRay& r,const Hittable& world,int depth){
 int main() {
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
+    const int image_width = 800;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int spp = 30;
     const int maxDepth = 30;
     
+    Point3f lookfrom(3, 3, 2);
+    Point3f lookat(0, 0, -1);
+    Vector3f vup(0, 1, 0);
+    auto distToFocus = (lookfrom - lookat).Length();
+    auto aperture = 2.0;
+
     // Camera
-    BCamera cam;
+    BCamera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, distToFocus);
 
     auto matGround=make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
     auto matCenter=make_shared<Lambertian>(Color(0.7, 0.3, 0.3));

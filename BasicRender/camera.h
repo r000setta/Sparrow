@@ -4,22 +4,35 @@
 namespace sparrow {
 	class BCamera {
 	public:
-		BCamera() {
-			auto aspectRatio = 16.9 / 9.0;
-			auto viewportHeight = 2.0;
+		BCamera(Point3f lookfrom,
+			Point3f lookat,
+			Vector3f vup,
+			Float vfov,Float aspectRatio,
+			Float aperture,Float focusDist) {
+			auto theta = Radians(vfov);
+			auto h = tan(theta / 2);
+			auto viewportHeight = 2.0 * h;
 			auto viewportWidth = aspectRatio * viewportHeight;
-			auto focalLen = 1.0;
-			origin = Point3f(0, 0, 0);
-			horizontal = Vector3f(viewportWidth, 0, 0);
-			vertical = Vector3f(0, viewportHeight, 0);
-			lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - Vector3f(0, 0, focalLen);
+
+			w = Normalize(lookfrom - lookat);
+			u = Normalize(Cross(vup, w));
+			v = Cross(w, u);
+			origin = lookfrom;
+			horizontal = viewportWidth * u * focusDist;
+			vertical = viewportHeight * v * focusDist;
+			lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - w * focusDist;
+			lensRadius = aperture / 2;
 		}
 
-		RRay getRay(Float u, Float v) const {
-			return RRay(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
+		RRay getRay(Float s, Float t) const {
+			Vector3f rd = lensRadius * RandomInUnitDisk<Float>();
+			Vector3f offset = u * rd.x + v * rd.y;
+			return RRay(origin + offset, lowerLeftCorner + s * horizontal + t * vertical - origin - offset);
 		}
 
 	private:
+		Vector3f u, v, w;
+		Float lensRadius;
 		Point3f origin;
 		Point3f lowerLeftCorner;
 		Vector3f horizontal;

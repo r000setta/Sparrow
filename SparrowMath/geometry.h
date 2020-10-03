@@ -1070,4 +1070,13 @@ namespace sparrow {
 		Vector3<T> rOutParallel = -sqrt(fabs(1.0 - rOutPerp.LengthSquared())) * n;
 		return rOutPerp + rOutParallel;
 	}
+
+	template<typename T>
+	Vector3<T> RandomInUnitDisk() {
+		while (true) {
+			auto p = Vector3f(RandomFloat(-1, 1), RandomFloat(-1, 1), 0);
+			if (p.LengthSquared() >= 1) continue;
+			return p;
+		}
+	}
 }
