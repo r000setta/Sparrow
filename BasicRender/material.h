@@ -9,6 +9,9 @@ namespace sparrow {
 	public:
 		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered)
 			const = 0;
+		virtual Color emitted(Float u, Float v, const Point3f& p) const {
+			return Color(0, 0, 0);
+		}
 	};
 
 	inline Float Schlick(Float cosine, Float refIdx) {
@@ -16,4 +19,6 @@ namespace sparrow {
 		r0 = r0 * r0;
 		return r0 + (1 - r0) * pow((1 - cosine), 5);
 	}
+
+	
 }

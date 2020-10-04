@@ -155,9 +155,11 @@
     <ClCompile Include="sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aarect.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="dielectric.h" />
+    <ClInclude Include="diffuse_light.h" />
     <ClInclude Include="hittable.h" />
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="lambertian.h" />
@@ -168,9 +170,10 @@
     <ClInclude Include="ray.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="sphere.h" />
+    <ClInclude Include="spstb_image.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

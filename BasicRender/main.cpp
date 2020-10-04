@@ -12,21 +12,21 @@
 
 using namespace sparrow;
 
-Color RayColor(const RRay& r,const Hittable& world,int depth){
+Color RayColor(const RRay& r,const Color& background, const Hittable& world,int depth){
+    HitRecord rec;
     if (depth <= 0) {
         return Color(0, 0, 0);
     }
-    HitRecord rec;
-    if (world.hit(r, 0.001, Infinity, rec)) {
-        RRay scattered;
-        Color attenuation;
-        if (rec.matPtr->scatter(r, rec, attenuation, scattered))
-            return EleDot(attenuation,RayColor(scattered, world, depth - 1));
-        return Color(0, 0, 0);
+    if (!world.hit(r, 0.001, Infinity, rec)) {
+        return background;
     }
-    auto unitDirection = Normalize(r.direction());
-    auto t = 0.5 * (unitDirection.y + 1.0);
-    return (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0);
+
+    RRay scattered;
+    Color attenuation;
+    Color emitted = rec.matPtr->emitted(rec.u, rec.v, rec.p);
+    if (!rec.matPtr->scatter(r, rec, attenuation, scattered))
+        return emitted;
+    return emitted + EleDot(attenuation, RayColor(scattered, background, world, depth - 1));
 }
 
 int main() {
@@ -37,13 +37,15 @@ int main() {
     const int spp = 30;
     const int maxDepth = 30;
     
-    Point3f lookfrom(3, 3, 2);
-    Point3f lookat(0, 0, -1);
+    // Right up zom in
+    //Point3f lookfrom(3, 3, 2);
+
+    Point3f lookfrom(13, 2, 3);
+    Point3f lookat(0, 0, 0);
     Vector3f vup(0, 1, 0);
     auto distToFocus = (lookfrom - lookat).Length();
     auto aperture = 0.1;
 
-    // Camera
     BCamera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, distToFocus, 0.0, 2.0);
 
     auto matLambertian=make_shared<Lambertian>(Color(0, 0.53, 0.73));
@@ -54,17 +56,22 @@ int main() {
     auto checker = make_shared<CheckerTexture>(Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
     auto pertext = make_shared<NoiseTexture>(4);
     auto perlinMat = make_shared<Lambertian>(pertext);
-    auto matGround = make_shared<Lambertian>(checker);
+    auto matChecker = make_shared<Lambertian>(checker);
 
+    auto earthTexture = make_shared<ImageTexture>("D:\\Sparrow\\Texture\\earthmap.jpg");
+    auto earthMat = make_shared<Lambertian>(earthTexture);
+
+    Color background{ 0.30, 0.20, 0.40 };
+   
     HittableList world;
     Point3f cen(1.0, 0.0, -1.0);
     auto cen2 = cen + Vector3f(0, RandomFloat(0, .5), 0);
     //ground
-    world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, perlinMat));
+    world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, matChecker));
     //center
     world.add(make_shared<Sphere>(Point3f(0.0, 0.0, -1.0), 0.5, matMetal));
     //right
-    world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, matLambertian));
+    world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, earthMat));
     //left
     world.add(make_shared<Sphere>(Point3f(-1.0, 0.0, -1.0), 0.5, matDielectric));
     //world.add(make_shared<MovingSphere>(cen, cen2, 0.0, 1.0, 0.2, matLeft));
@@ -78,7 +85,7 @@ int main() {
                 auto u = (i + RandomFloat()) / (image_width - 1);
                 auto v = (j + RandomFloat()) / (image_height - 1);
                 RRay r = cam.getRay(u, v);
-                p += RayColor(r, world, maxDepth);
+                p += RayColor(r, background, world, maxDepth);
             }
             WriteColor(std::cout, p, spp);
         }
