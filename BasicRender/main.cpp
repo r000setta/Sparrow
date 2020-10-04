@@ -32,7 +32,7 @@ Color RayColor(const RRay& r,const Hittable& world,int depth){
 int main() {
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 800;
+    const int image_width = 1920;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int spp = 30;
     const int maxDepth = 30;
@@ -46,21 +46,28 @@ int main() {
     // Camera
     BCamera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, distToFocus, 0.0, 2.0);
 
-    auto matGround=make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
-    auto matCenter=make_shared<Lambertian>(Color(0.7, 0.3, 0.3));
+    auto matLambertian=make_shared<Lambertian>(Color(0, 0.53, 0.73));
     //auto matCenter=make_shared<Dielectric>(1.5);
     //auto matLeft=make_shared<Metal>(Color(0.8, 0.8, 0.8),0.3);
-    auto matLeft=make_shared<Dielectric>(1.5);
-    auto matRight=make_shared<Metal>(Color(0.8, 0.6, 0.2),1.0);
+    auto matDielectric=make_shared<Dielectric>(1.5);
+    auto matMetal=make_shared<Metal>(Color(0.7, 0.3, 0.3),0.2);
+    auto checker = make_shared<CheckerTexture>(Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
+    auto pertext = make_shared<NoiseTexture>(4);
+    auto perlinMat = make_shared<Lambertian>(pertext);
+    auto matGround = make_shared<Lambertian>(checker);
 
     HittableList world;
     Point3f cen(1.0, 0.0, -1.0);
     auto cen2 = cen + Vector3f(0, RandomFloat(0, .5), 0);
-    world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, matGround));
-    world.add(make_shared<Sphere>(Point3f(0.0, 0.0, -1.0), 0.5, matCenter));
-    world.add(make_shared<Sphere>(Point3f(-1.0,0.0, -1.0), 0.5, matLeft));
-    //world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, matRight));
-    world.add(make_shared<MovingSphere>(cen, cen2, 0.0, 1.0, 0.2, matRight));
+    //ground
+    world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, perlinMat));
+    //center
+    world.add(make_shared<Sphere>(Point3f(0.0, 0.0, -1.0), 0.5, matMetal));
+    //right
+    world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, matLambertian));
+    //left
+    world.add(make_shared<Sphere>(Point3f(-1.0, 0.0, -1.0), 0.5, matDielectric));
+    //world.add(make_shared<MovingSphere>(cen, cen2, 0.0, 1.0, 0.2, matLeft));
 
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 

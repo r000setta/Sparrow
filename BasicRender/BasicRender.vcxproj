@@ -164,9 +164,11 @@
     <ClInclude Include="material.h" />
     <ClInclude Include="metal.h" />
     <ClInclude Include="moving_sphere.h" />
+    <ClInclude Include="perlin.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="sphere.h" />
+    <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

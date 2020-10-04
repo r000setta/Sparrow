@@ -15,6 +15,8 @@ void VectorTest() {
 	auto s = Dot(u, v);
 	auto e = Cross(u, v);
 
+	auto t = n * u;
+
 	cout << "u=" << u << endl;
 	cout << "v=" << v << endl;
 	cout << "w=" << w << endl;

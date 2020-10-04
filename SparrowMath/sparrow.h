@@ -81,4 +81,8 @@ namespace sparrow {
 	inline Float RandomFloat(Float min,Float max) {
 		return min + (max - min) * RandomFloat();
 	}
+
+	inline int RandomInt(int min, int max) {
+		return static_cast<int>(RandomFloat(min, max + 1));
+	}
 }

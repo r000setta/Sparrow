@@ -14,6 +14,8 @@ namespace sparrow {
 		Vector3f normal;
 		Float t;
 		shared_ptr<Material> matPtr;
+		Float u;
+		Float v;
 		bool frontFace;
 
 		inline void setFrontNormal(const RRay& r, const Vector3f& outward) {
