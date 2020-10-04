@@ -27,6 +27,15 @@
     <ClCompile Include="moving_sphere.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="aarect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="box.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="hittable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="color.h">
@@ -81,6 +90,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="aarect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="box.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

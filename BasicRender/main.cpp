@@ -9,6 +9,9 @@
 #include "metal.h"
 #include "dielectric.h"
 #include "moving_sphere.h"
+#include "diffuse_light.h"
+#include "aarect.h"
+#include "box.h"
 
 using namespace sparrow;
 
@@ -29,24 +32,53 @@ Color RayColor(const RRay& r,const Color& background, const Hittable& world,int 
     return emitted + EleDot(attenuation, RayColor(scattered, background, world, depth - 1));
 }
 
+HittableList SimpleLight() {
+    auto checker = make_shared<CheckerTexture>(Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
+    HittableList objects;
+    auto pertext = make_shared<NoiseTexture>(4);
+    objects.add(make_shared<Sphere>(Point3f(0, -1000, 0), 1000, make_shared<Lambertian>(checker)));
+    objects.add(make_shared<Sphere>(Point3f(0, 2, 0), 2, make_shared<Lambertian>(pertext)));
+
+    auto diffLight = make_shared<DiffuseLight>(Color(4, 4, 4));
+    objects.add(make_shared<XYRect>(3, 5, 1, 3, -2, diffLight));
+    return objects;
+}
+
+HittableList CornellBox() {
+    HittableList objects;
+    auto red = make_shared<Lambertian>(Color(.65, .05, .05));
+    auto white = make_shared<Lambertian>(Color(.73, .73, .73));
+    auto green = make_shared<Lambertian>(Color(.12, .45, .15));
+    auto light = make_shared<DiffuseLight>(Color(15, 15, 15));
+
+    objects.add(make_shared<YZRect>(0, 555, 0, 555, 555, green));
+    objects.add(make_shared<YZRect>(0, 555, 0, 555, 0, red));
+    objects.add(make_shared<XZRect>(213, 343, 227, 332, 554, light));
+    objects.add(make_shared<XZRect>(0, 555, 0, 555, 0, white));
+    objects.add(make_shared<XZRect>(0, 555, 0, 555, 555, white));
+    objects.add(make_shared<XYRect>(0, 555, 0, 555, 555, white));
+
+    objects.add(make_shared<Box>(Point3f(130, 0, 65), Point3f(295, 165, 230), white));
+    objects.add(make_shared<Box>(Point3f(265, 0, 295), Point3f(430, 330, 460), white));
+
+    return objects;
+}
+
 int main() {
     // Image
-    const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 1920;
-    const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int spp = 30;
+    Float aspectRatio = 16.0 / 9.0;
+    Float imageWidth = 800;
+    int spp = 50;
     const int maxDepth = 30;
+    Float vfov = 40.0;
     
     // Right up zom in
     //Point3f lookfrom(3, 3, 2);
 
-    Point3f lookfrom(13, 2, 3);
+    Point3f lookfrom(3, 3, 2);
     Point3f lookat(0, 0, 0);
     Vector3f vup(0, 1, 0);
-    auto distToFocus = (lookfrom - lookat).Length();
-    auto aperture = 0.1;
-
-    BCamera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, distToFocus, 0.0, 2.0);
+    Float aperture = 0.0;
 
     auto matLambertian=make_shared<Lambertian>(Color(0, 0.53, 0.73));
     //auto matCenter=make_shared<Dielectric>(1.5);
@@ -61,29 +93,47 @@ int main() {
     auto earthTexture = make_shared<ImageTexture>("D:\\Sparrow\\Texture\\earthmap.jpg");
     auto earthMat = make_shared<Lambertian>(earthTexture);
 
-    Color background{ 0.30, 0.20, 0.40 };
-   
+    Color background{ 0,0,0 };
+
     HittableList world;
-    Point3f cen(1.0, 0.0, -1.0);
-    auto cen2 = cen + Vector3f(0, RandomFloat(0, .5), 0);
+    switch (0)
+    {
+    case 0:
+        world = CornellBox();
+        aspectRatio = 1.0;
+        imageWidth = 800;
+        spp = 400;
+        background = Color(0, 0, 0);
+        lookfrom = Point3f(278, 278, -800);
+        lookat = Point3f(278, 278, 0);
+        vfov = 40.0;
+        break;
+    default:
+        break;
+    }
+
+    auto distToFocus = (lookfrom - lookat).Length();
+    int imageHeight = static_cast<int>(imageWidth / aspectRatio);
+
+    BCamera cam(lookfrom, lookat, vup, vfov, aspectRatio, aperture, distToFocus, 0.0, 2.0);
     //ground
-    world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, matChecker));
+    //world.add(make_shared<Sphere>(Point3f(0.0, -100.5, -1.0), 100.0, matChecker));
     //center
-    world.add(make_shared<Sphere>(Point3f(0.0, 0.0, -1.0), 0.5, matMetal));
+    //world.add(make_shared<Sphere>(Point3f(0.0, 0.0, -1.0), 0.5, matMetal));
     //right
-    world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, earthMat));
+    //world.add(make_shared<Sphere>(Point3f(1.0, 0.0, -1.0), 0.5, earthMat));
     //left
-    world.add(make_shared<Sphere>(Point3f(-1.0, 0.0, -1.0), 0.5, matDielectric));
+    //world.add(make_shared<Sphere>(Point3f(-1.0, 0.0, -1.0), 0.5, matDielectric));
     //world.add(make_shared<MovingSphere>(cen, cen2, 0.0, 1.0, 0.2, matLeft));
 
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
-    for (int j = image_height - 1; j >= 0; --j) {
-        for (int i = 0; i < image_width; ++i) {
+    for (int j = imageHeight - 1; j >= 0; --j) {
+        for (int i = 0; i < imageWidth; ++i) {
             Color p(0, 0, 0);
             for (int s = 0; s < spp; ++s) {
-                auto u = (i + RandomFloat()) / (image_width - 1);
-                auto v = (j + RandomFloat()) / (image_height - 1);
+                auto u = (i + RandomFloat()) / (imageWidth - 1);
+                auto v = (j + RandomFloat()) / (imageHeight - 1);
                 RRay r = cam.getRay(u, v);
                 p += RayColor(r, background, world, maxDepth);
             }

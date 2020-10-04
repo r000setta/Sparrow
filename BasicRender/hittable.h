@@ -28,4 +28,22 @@ namespace sparrow {
 	public:
 		virtual bool hit(const RRay& r, double tmin, double tmax, HitRecord& rec) const = 0;
 	};
+
+	class Translate :public Hittable {
+	public:
+		shared_ptr<Hittable> ptr;
+		Vector3f offset;
+	public:
+		Translate(shared_ptr<Hittable> p, const Vector3f& displacement)
+			:ptr(p), offset(displacement) {}
+		virtual bool hit(const RRay& r, double tmin, double tmax, HitRecord& rec) const override;
+	};
+
+	class RotateY :public Hittable {
+	public:
+		shared_ptr<Hittable> ptr;
+		Float sinTheta;
+		Float cosTheta;
+		bool hasBox;
+	};
 }
