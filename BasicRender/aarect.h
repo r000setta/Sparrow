@@ -24,6 +24,21 @@ namespace sparrow {
 		XZRect(Float x0, Float x1, Float z0, Float z1, Float k, shared_ptr<Material> mat)
 			:x0(x0), x1(x1), z0(z0), z1(z1), k(k), mp(mat) {}
 		virtual bool hit(const RRay& r, double tmin, double tmax, HitRecord& rec) const override;
+
+		virtual Float PDFvalue(const Point3f& o, const Vector3f& v) const override {
+			HitRecord rec;
+			if (!this->hit(RRay(o, v), 0.001, Infinity, rec)) return 0;
+
+			auto area = (x1 - x0) * (z1 - z0);
+			auto distanceSquared = rec.t * rec.t * v.LengthSquared();
+			auto cosine = fabs(Dot(v, rec.normal) / v.Length());
+			return distanceSquared / (cosine * area);
+		}
+
+		virtual Vector3f Random(const Point3f& o) const override {
+			auto randomPoint = Point3f(RandomFloat(x0, x1), k, RandomFloat(z0, z1));
+			return randomPoint - o;
+		}
 	};
 
 	class YZRect :public Hittable {

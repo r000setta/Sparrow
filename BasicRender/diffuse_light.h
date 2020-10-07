@@ -11,10 +11,15 @@ namespace sparrow {
 	public:
 		DiffuseLight(shared_ptr<Texture> a) :emit(a) {}
 		DiffuseLight(Color c) :emit(make_shared<SolidColor>(c)) {}
-		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered)
+		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered,Float& pdf)
 			const override {
 			return false;
 		}
+
+		/*virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered)
+			const override {
+			return false;
+		}*/
 
 		virtual Color emitted(Float u, Float v, const Point3f& p) const override {
 			return emit->value(u, v, p);

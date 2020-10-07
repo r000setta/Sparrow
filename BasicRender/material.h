@@ -7,8 +7,17 @@ namespace sparrow {
 
 	class Material {
 	public:
-		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered)
-			const = 0;
+		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered, Float& pdf)
+			const {
+			return false;
+		}
+		/*virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered)
+			const {
+			return false;
+		}*/
+		virtual Float scatteringPDF(const RRay& irIn, const HitRecord& rec, const RRay& scattered) const {
+			return 0;
+		}
 		virtual Color emitted(Float u, Float v, const Point3f& p) const {
 			return Color(0, 0, 0);
 		}

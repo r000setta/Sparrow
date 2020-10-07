@@ -198,7 +198,7 @@ namespace sparrow {
 		}
 		template <typename U>
 		Vector3<T> operator/(U f) const {
-			CHECK_NE(f, 0);
+			//CHECK_NE(f, 0);
 			Float inv = (Float)1 / f;
 			return Vector3<T>(x * inv, y * inv, z * inv);
 		}
@@ -1078,5 +1078,12 @@ namespace sparrow {
 			if (p.LengthSquared() >= 1) continue;
 			return p;
 		}
+	}
+
+	template<typename T>
+	Vector3<T> RandomInHemisphere(const Vector3<T> normal) {
+		Vector3<T> inUnitSphere = RandomInUnitSphere<T>();
+		if (Dot(inUnitSphere, normal) > 0.0) return inUnitSphere;
+		return -inUnitSphere;
 	}
 }
