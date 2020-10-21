@@ -7,8 +7,13 @@ namespace sparrow {
 
 	class Material {
 	public:
-		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered, Float& pdf)
+		using ptr = std::shared_ptr<Material>;
+		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& alb, RRay& scattered, Float& pdf)
 			const {
+			return false;
+		}
+
+		virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& alb, RRay& scattered) const {
 			return false;
 		}
 		/*virtual bool scatter(const RRay& rIn, const HitRecord& rec, Color& attenuation, RRay& scattered)

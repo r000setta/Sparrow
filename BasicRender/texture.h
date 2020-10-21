@@ -3,10 +3,18 @@
 #include "geometry.h"
 #include "perlin.h"
 #include "spstb_image.h"
+#include "texture_mgr.h"
+
+using std::make_shared;
+using std::shared_ptr;
 
 namespace sparrow {
+
 	class Texture {
 	public:
+		using ptr = std::shared_ptr<Texture>;
+		Texture() = default;
+		virtual ~Texture() = default;
 		virtual Color value(Float u, Float v, const Point3f& p) const = 0;
 	};
 
@@ -14,6 +22,7 @@ namespace sparrow {
 	private:
 		Color colorValue;
 	public:
+		using ptr = std::shared_ptr<SolidColor>;
 		SolidColor() {}
 		SolidColor(Color c) :colorValue(c) {}
 		SolidColor(Float red, Float green, Float blue)
@@ -28,6 +37,7 @@ namespace sparrow {
 		shared_ptr<Texture> odd;
 		shared_ptr<Texture> even;
 	public:
+		using ptr = shared_ptr<CheckerTexture>;
 		CheckerTexture() {}
 		CheckerTexture(shared_ptr<Texture> t0, shared_ptr<Texture> t1)
 			:even(t0), odd(t1) {}

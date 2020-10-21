@@ -5,6 +5,7 @@
 #endif // _MSC_VER
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_STATIC
 #include "stb_image.h"
 
 #ifdef _MSC_VER

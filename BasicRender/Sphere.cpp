@@ -17,7 +17,7 @@ namespace sparrow {
 				Vector3f outward = (rec.p - center) / radius;
 				rec.setFrontNormal(r, outward);
 				GetSphereUV((rec.p - center) / radius, rec.u, rec.v);
-				rec.matPtr = matPtr;
+				rec.material = material;
 				return true;
 			}
 			tmp = (-halfb + root) / a;
@@ -27,7 +27,7 @@ namespace sparrow {
 				Vector3f outward = (rec.p - center) / radius;
 				rec.setFrontNormal(r, outward);
 				GetSphereUV((rec.p - center) / radius, rec.u, rec.v);
-				rec.matPtr = matPtr;
+				rec.material = material;
 				return true;
 			}
 		}

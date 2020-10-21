@@ -27,13 +27,22 @@
     <ClCompile Include="moving_sphere.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="aarect.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="box.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="hittable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="texture_mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="color.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tracer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="material_mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -42,9 +51,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ray.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="render.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="hittable.h">
@@ -89,16 +95,22 @@
     <ClInclude Include="diffuse_light.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="aarect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="box.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="pdf.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="onb.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="texture_mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="singleton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="material_mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tracer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

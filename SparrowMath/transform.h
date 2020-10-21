@@ -54,7 +54,10 @@ namespace sparrow {
 			return false;
 		}
 
+		//void operator+=(const )
+
 		friend Matrix4x4 Transpose(const Matrix4x4& m);
+
 		void Print(FILE* f) const;
 		static Matrix4x4 Mul(const Matrix4x4& m1, const Matrix4x4& m2) {
 			Matrix4x4 r;

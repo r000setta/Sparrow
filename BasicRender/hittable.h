@@ -13,7 +13,7 @@ namespace sparrow {
 		Point3f p;
 		Vector3f normal;
 		Float t;
-		shared_ptr<Material> matPtr;
+		unsigned int material;
 		Float u;
 		Float v;
 		bool frontFace;

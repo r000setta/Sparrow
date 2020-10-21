@@ -6,11 +6,11 @@ namespace sparrow {
 	public:
 		Point3f center;
 		Float radius;
-		shared_ptr<Material> matPtr;
+		unsigned int material;
 	public:
 		Sphere() {}
-		Sphere(Point3f cen, Float r, shared_ptr<Material> m)
-			:center(cen), radius(r), matPtr(m) {}
+		Sphere(Point3f cen, Float r, unsigned int mat)
+			:center(cen), radius(r), material(mat) {}
 		virtual bool hit(const RRay& r, double tmin, double tmax, HitRecord& rec) const override;
 	};
 

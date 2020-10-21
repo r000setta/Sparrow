@@ -13,7 +13,7 @@ namespace sparrow {
 		rec.t = t;
 		auto outwardNormal = Vector3f(0, 0, 1);
 		rec.setFrontNormal(r, outwardNormal);
-		rec.matPtr = mp;
+		rec.material = mp;
 		rec.p = r.at(t);
 		return true;
 	}
@@ -29,7 +29,7 @@ namespace sparrow {
 		rec.t = t;
 		auto outwardNormal = Vector3f(0, 1, 0);
 		rec.setFrontNormal(r, outwardNormal);
-		rec.matPtr = mp;
+		rec.material = mp;
 		rec.p = r.at(t);
 		return true;
 	}
@@ -45,7 +45,7 @@ namespace sparrow {
 		rec.t = t;
 		auto outwardNormal = Vector3f(1, 0, 0);
 		rec.setFrontNormal(r, outwardNormal);
-		rec.matPtr = mp;
+		rec.material = mp;
 		rec.p = r.at(t);
 		return true;
 	}

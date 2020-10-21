@@ -16,7 +16,7 @@ namespace sparrow {
 				rec.p = r.at(tmp);
 				Vector3f outward = (rec.p - center(r.time())) / radius;
 				rec.setFrontNormal(r, outward);
-				rec.matPtr = matPtr;
+				rec.material = material;
 				return true;
 			}
 			tmp = (-halfb + root) / a;
@@ -25,7 +25,7 @@ namespace sparrow {
 				rec.p = r.at(tmp);
 				Vector3f outward = (rec.p - center(r.time())) / radius;
 				rec.setFrontNormal(r, outward);
-				rec.matPtr = matPtr;
+				rec.material = material;
 				return true;
 			}
 		}
