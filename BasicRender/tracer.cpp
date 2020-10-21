@@ -34,7 +34,7 @@ namespace sparrow {
 
 	Color Tracer::tracing(const RRay& r, const Hittable& world, int depth) {
 		HitRecord rec;
-		if (depth <= 0)
+		/*if (depth <= 0)
 			return Color(0.1, 0.1, 0.1);
 		if (world.hit(r, 0.001, Infinity, rec)) {
 			RRay scattered;
@@ -46,52 +46,44 @@ namespace sparrow {
 			}
 			return Color(0, 0, 0);
 		}
-		return Color(1, 1, 1);
+		return Color(1, 1, 1);*/
 
-		//if (depth <= 0) return Color(0, 0, 0);
-		//if (!world.hit(r, 0.001, Infinity, rec)) {
-		//	Color ret;
-		//	switch (config.background)
-		//	{
-		//	case PURE:
-		//		ret = Color(0, 0, 0);
-		//		break;
-		//	case LERP:
-		//		ret = Color(0, 0, 0);
-		//		break;
-		//	default:
-		//		break;
-		//	}
-		//	return ret;
-		//}
-		//else {
-		//	RRay scattered;
-		//	Color attenuation;
-		//	shared_ptr<Material> mat = manager.m_materialMgr->getMaterial(rec.material);
-		//	Color emitted = mat->emitted(rec.u, rec.v, rec.p);
+		if (depth <= 0) return Color(0, 0, 0);
+		if (!world.hit(r, 0.001, Infinity, rec)) {
+			Color ret;
+			switch (config.background)
+			{
+			case PURE:
+				ret = Color(1, 1, 1);
+				break;
+			case LERP:
+				ret = Color(1, 1, 1);
+				break;
+			default:
+				break;
+			}
+			return ret;
+		}
+		else {
+			RRay scattered;
+			Color attenuation;
+			shared_ptr<Material> mat = manager.m_materialMgr->getMaterial(rec.material);
+			Color emitted = mat->emitted(rec.u, rec.v, rec.p);
 
-		//	Float pdf;
-		//	Color albedo;
-		//	if (mat->scatter(r, rec, albedo, scattered))
-		//		return albedo+tracing(scattered, world, depth - 1);
-		//	return Color(0.5, 0.5, 0.5);
-		//	//if (!mat->scatter(r, rec, albedo, scattered, pdf))
-		//	//	return emitted;
-		//	//shared_ptr<Hittable> lightShape = make_shared<XZRect>(213, 343, 227, 332, 554, shared_ptr<Material>());
-		//	//auto p0 = make_shared<HittablePDF>(lightShape, rec.p);
-		//	//auto p1 = make_shared<ConsinePDF>(rec.normal);
-		//	//MixturePDF p(p0, p1);
+			Float pdf;
+			Color albedo;
+			
+			if (!mat->scatter(r, rec, albedo, scattered, pdf))
+				return emitted;
 
-		//	/*scattered = RRay(rec.p, RandomInUnitSphere<Float>(), r.time());
-		//	pdf = p.value(scattered.direction());
+			return emitted
+				+ EleDot<Float>(albedo * mat->scatteringPDF(r, rec, scattered)
+					, tracing(scattered, world, depth - 1)) / pdf;
 
-		//	return emitted
-		//		+ EleDot<Float>(albedo * mat->scatteringPDF(r, rec, scattered)
-		//			, tracing(scattered, world, depth - 1)) / pdf;*/
-
-		//	//return emitted + EleDot<Float>(albedo * mat->scatteringPDF(r, rec, scattered), tracing(scattered, world, depth - 1)) / pdf;
-		//	//std::cout << "albedo1:" << albedo << std::endl;
-		//	//return EleDot(albedo * mat->scatteringPDF(r, rec, scattered), tracing(scattered, world, depth - 1)) / pdf;
+					//	//return emitted + EleDot<Float>(albedo * mat->scatteringPDF(r, rec, scattered), tracing(scattered, world, depth - 1)) / pdf;
+					//	//std::cout << "albedo1:" << albedo << std::endl;
+					//	//return EleDot(albedo * mat->scatteringPDF(r, rec, scattered), tracing(scattered, world, depth - 1)) / pdf;
+		}
 	}
 
 	void Tracer::drawPixel(unsigned int x,unsigned int y, Color pixelColor, int spp) {

@@ -2,6 +2,8 @@
 #include "lambertian.h"
 #include "dielectric.h"
 #include "sphere.h"
+#include "aarect.h"
+#include "box.h"
 using namespace sparrow;
 
 Tracer tracer;
@@ -27,6 +29,33 @@ void twoSpheresScene()
     camera->setPosition(Point3f(-2, 2, 1));
     camera->setTarget(Point3f(0, 0, -1));
     camera->setFovy(90);
+}
+
+void CornellBox() {
+    TextureMgr::ptr texMgr = tracer.getTextureMgr();
+    unsigned int white = texMgr->loadTexture(new SolidColor(0.73, 0.73, 0.73));
+    unsigned int red = texMgr->loadTexture(new SolidColor(0.65, 0.05, 0.05));
+    unsigned int green = texMgr->loadTexture(new SolidColor(.12, .45, .15));
+    unsigned int light = texMgr->loadTexture(new SolidColor(15, 15, 15));
+
+    MaterialMgr::ptr matMgr = tracer.getMaterialMgr();
+    unsigned int whiteMat = matMgr->loadMaterial(new Lambertian(white));
+    unsigned int redMat = matMgr->loadMaterial(new Lambertian(red));
+    unsigned int greenMat = matMgr->loadMaterial(new Lambertian(green));
+    unsigned int lightMat = matMgr->loadMaterial(new Lambertian(light));
+
+    tracer.addObjects(make_shared<YZRect>(0, 555, 0, 555, 555, greenMat));
+    tracer.addObjects(make_shared<YZRect>(0, 555, 0, 555, 0, redMat));
+    tracer.addObjects(make_shared<XZRect>(0, 555, 0, 555, 0, whiteMat));
+    tracer.addObjects(make_shared<FlipFace>(make_shared<XZRect>(213, 343, 227, 332, 554, lightMat)));
+    tracer.addObjects(make_shared<XZRect>(0, 555, 0, 555, 555, whiteMat));
+    tracer.addObjects(make_shared<XYRect>(0, 555, 0, 555, 555, whiteMat));
+    //tracer.addObjects(make_shared<Box>(Point3f(130, 0, 65), Point3f(295, 165, 230), whiteMat));
+    //tracer.addObjects(make_shared<Box>(Point3f(265, 0, 295), Point3f(430, 330, 460), whiteMat));
+    BCamera* camera = tracer.getCamera();
+    camera->setPosition(Point3f(278, 278, -800));
+    camera->setTarget(Point3f(278, 278, 0));
+    camera->setFovy(40);
 }
 
 
@@ -205,7 +234,8 @@ int main() {
     tracer.setMaxDepth(3);
     tracer.setSpp(30);
 
-    twoSpheresScene();
+    //twoSpheresScene();
+    CornellBox();
 
     Float totalTime = 0.0f;
     unsigned char* ret = nullptr;

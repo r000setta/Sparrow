@@ -149,6 +149,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aarect.cpp" />
+    <ClCompile Include="box.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="hittable.cpp" />
@@ -161,6 +163,8 @@
     <ClCompile Include="tracer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aarect.h" />
+    <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="dielectric.h" />
