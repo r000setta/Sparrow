@@ -1,7 +1,7 @@
 #include "box.h"
 
 namespace sparrow {
-	Box::Box(const Point3f& p0, const Point3f& p1, shared_ptr<Material> mat)
+	Box::Box(const Point3f& p0, const Point3f& p1, unsigned int mat) 
 	{
 		boxMin = p0;
 		boxMax = p1;

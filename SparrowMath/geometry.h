@@ -246,6 +246,11 @@ namespace sparrow {
 	using Color = Vector3f;
 
 	template<typename T>
+	class Vector4 {
+
+	};
+
+	template<typename T>
 	class Point2 {
 	public:
 		T x, y;

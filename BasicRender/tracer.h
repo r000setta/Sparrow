@@ -100,7 +100,8 @@ namespace sparrow {
 		Color tracing(const RRay& r, const Hittable& scene, int depth);
 		void drawPixel(unsigned int x, unsigned int y, const Color& color);
 		void rawSerialRender(Hittable& scene);
+		void parallelThreadRender(Hittable& scene);
 
-		void drawPixel(unsigned int x, unsigned int y, Color pixelColor, int spp);
+		Vector3f deNan(const Vector3f& c);
 	};
 }

@@ -1,4 +1,8 @@
 #include "tracer.h"
+#include "tbb/parallel_for.h"
+#include "stb_image_write.h"
+
+using namespace tbb;
 
 namespace sparrow {
 	unsigned char* Tracer::render(double& totalTime) {
@@ -16,37 +20,61 @@ namespace sparrow {
 	}
 
 	void Tracer::rawSerialRender(Hittable& scene) {
-		std::cout << "P3\n" << config.width << ' ' << config.height << "\n255\n";
-		for (auto j = config.height - 1; j >= 0; --j) {
-			for (auto i = 0; i < config.width; ++i) {
+		//std::cout << "P3\n" << config.width << ' ' << config.height << "\n255\n";
+		for (int row = config.height - 1; row >= 0; --row) {
+			for (int col = 0; col < config.width; ++col) {
 				Color color(0, 0, 0);
-				for (auto s = 0; s < config.spp; ++s) {
-					Float u = (i + RandomFloat()) / (config.width - 1);
-					Float v = (j + RandomFloat()) / (config.height - 1);
+				for (unsigned int s = 0; s < config.spp; ++s) {
+					Float u = static_cast<Float>(col + RandomFloat()) / static_cast<Float>(config.width);
+					Float v = static_cast<Float>(row + RandomFloat()) / static_cast<Float>(config.height);
 					RRay ray = config.camera->getRay(u, v);
-					Color tmp= tracing(ray, scene, config.maxDepth);
+					Color tmp= deNan(tracing(ray, scene, config.maxDepth));
 					color += tmp;
 				}
-				drawPixel(i, j, color, config.spp);
+				color /= static_cast<Float>(config.spp);
+				color = Vector3f(sqrt(color.x), sqrt(color.y), sqrt(color.z));
+				if (color.x > 1.0f) color.x = 1.0f;
+				if (color.y > 1.0f) color.y = 1.0f;
+				if (color.z > 1.0f) color.z = 1.0f;
+				drawPixel(col, row, color);
+
+				/*std::cout << static_cast<int>(256 * Clamp(color.x, 0.0, 0.999)) << ' '
+					<< static_cast<int>(256 * Clamp(color.y, 0.0, 0.999)) << ' '
+					<< static_cast<int>(256 * Clamp(color.z, 0.0, 0.999)) << '\n';*/
 			}
 		}
 	}
 
+	Vector3f Tracer::deNan(const Vector3f& c) {
+		Vector3f tmp = c;
+		if (!(tmp.x == tmp.x)) tmp.x = 0;
+		if (!(tmp.y == tmp.y)) tmp.y = 0;
+		if (!(tmp.z == tmp.z)) tmp.z = 0;
+		return tmp;
+	}
+
+	void Tracer::parallelThreadRender(Hittable& scene) {
+		std::cout << "P3\n" << config.width << ' ' << config.height << "\n255\n";
+		parallel_for(blocked_range<size_t>(0, config.height * config.width, 10000),
+			[&](blocked_range<size_t>& r) {
+				for (size_t i = r.begin(); i != r.end(); ++i) {
+					Color color(0, 0, 0);
+					size_t col = i % config.width;
+					size_t row = i / config.width;
+					for (unsigned int x = 0; x < config.spp; ++x) {
+						Float u = (col + RandomFloat()) / (config.width - 1);
+						Float v = (row + RandomFloat()) / (config.height - 1);
+						RRay ray = config.camera->getRay(u, v);
+						Color tmp = tracing(ray, scene, config.maxDepth);
+						color += tmp;
+					}
+					drawPixel(col, row, color);
+				}
+			}, auto_partitioner());
+	}
+
 	Color Tracer::tracing(const RRay& r, const Hittable& world, int depth) {
 		HitRecord rec;
-		/*if (depth <= 0)
-			return Color(0.1, 0.1, 0.1);
-		if (world.hit(r, 0.001, Infinity, rec)) {
-			RRay scattered;
-			Color attenuation;
-			Material::ptr mat = manager.m_materialMgr->getMaterial(rec.material);
-			if (mat->scatter(r, rec, attenuation, scattered)) {
-				Color tmpColor = EleDot<Float>(attenuation, tracing(scattered, world, depth - 1));
-				return tmpColor;
-			}
-			return Color(0, 0, 0);
-		}
-		return Color(1, 1, 1);*/
 
 		if (depth <= 0) return Color(0, 0, 0);
 		if (!world.hit(r, 0.001, Infinity, rec)) {
@@ -54,7 +82,7 @@ namespace sparrow {
 			switch (config.background)
 			{
 			case PURE:
-				ret = Color(1, 1, 1);
+				ret = Color(0.5, 0.5, 0.5);
 				break;
 			case LERP:
 				ret = Color(1, 1, 1);
@@ -79,31 +107,15 @@ namespace sparrow {
 			return emitted
 				+ EleDot<Float>(albedo * mat->scatteringPDF(r, rec, scattered)
 					, tracing(scattered, world, depth - 1)) / pdf;
-
-					//	//return emitted + EleDot<Float>(albedo * mat->scatteringPDF(r, rec, scattered), tracing(scattered, world, depth - 1)) / pdf;
-					//	//std::cout << "albedo1:" << albedo << std::endl;
-					//	//return EleDot(albedo * mat->scatteringPDF(r, rec, scattered), tracing(scattered, world, depth - 1)) / pdf;
 		}
 	}
 
-	void Tracer::drawPixel(unsigned int x,unsigned int y, Color pixelColor, int spp) {
-		Float r = pixelColor.x;
-		Float g = pixelColor.y;
-		Float b = pixelColor.z;
-		auto scale = 1.0 / spp;
-		//Gamma correction for gamma=2.0
-		r = sqrt(scale * r);
-		g = sqrt(scale * g);
-		b = sqrt(scale * b);
-
-		unsigned int idx = (y * config.width + x) * config.channel;
-		image[idx + 0] = static_cast<unsigned char>(256 * Clamp(r, 0.0, 0.999));
-		image[idx + 1] = static_cast<unsigned char>(256 * Clamp(g, 0.0, 0.999));
-		image[idx + 2] = static_cast<unsigned char>(256 * Clamp(b, 0.0, 0.999));
-
-		std::cout << static_cast<int>(256 * Clamp(r, 0.0, 0.999)) << ' '
-			<< static_cast<int>(256 * Clamp(g, 0.0, 0.999)) << ' '
-			<< static_cast<int>(256 * Clamp(b, 0.0, 0.999)) << '\n';
+	void Tracer::drawPixel(unsigned int col,unsigned int row,const Color& color) {
+		if (col < 0 || col >= config.width || row < 0 || row >= config.height) return;
+		unsigned int idx = (row * config.width + col) * config.channel;
+		image[idx + 0] = static_cast<unsigned char>(255.99 * color.x);
+		image[idx + 1] = static_cast<unsigned char>(255.99 * color.y);
+		image[idx + 2] = static_cast<unsigned char>(255.99 * color.z);
 	}
 	
 	void Tracer::initialize(int w, int h, int c) {

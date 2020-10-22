@@ -51,6 +51,10 @@ namespace sparrow {
 		Float sinTheta;
 		Float cosTheta;
 		bool hasBox;
+
+	public:
+		RotateY(shared_ptr<Hittable> p, Float angle);
+		virtual bool hit(const RRay& r, double tmin, double tmax, HitRecord& rec) const override;
 	};
 
 	class FlipFace :public Hittable {
@@ -64,6 +68,5 @@ namespace sparrow {
 			rec.frontFace = !rec.frontFace;
 			return true;
 		}
-
 	};
 }

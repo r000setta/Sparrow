@@ -116,13 +116,13 @@
     <ClInclude Include="material_mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="tracer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="aarect.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="box.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tracer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
