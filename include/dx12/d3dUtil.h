@@ -184,7 +184,7 @@ struct MeshGeometry
 	// the Submeshes individually.
 	std::unordered_map<std::string, SubmeshGeometry> DrawArgs;
 
-	D3D12_VERTEX_BUFFER_VIEW VertexBufferView()const
+	D3D12_VERTEX_BUFFER_VIEW VertexBufferView() const
 	{
 		D3D12_VERTEX_BUFFER_VIEW vbv;
 		vbv.BufferLocation = VertexBufferGPU->GetGPUVirtualAddress();
@@ -194,7 +194,7 @@ struct MeshGeometry
 		return vbv;
 	}
 
-	D3D12_INDEX_BUFFER_VIEW IndexBufferView()const
+	D3D12_INDEX_BUFFER_VIEW IndexBufferView() const
 	{
 		D3D12_INDEX_BUFFER_VIEW ibv;
 		ibv.BufferLocation = IndexBufferGPU->GetGPUVirtualAddress();

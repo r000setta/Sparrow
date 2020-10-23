@@ -114,12 +114,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Sparrow\include\dx12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -141,15 +141,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="d3dApp.h" />
-    <ClInclude Include="d3dUtil.h" />
-    <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="..\include\dx12\d3dApp.h" />
+    <ClInclude Include="..\include\dx12\d3dUtil.h" />
+    <ClInclude Include="..\include\dx12\GameTimer.h" />
+    <ClInclude Include="..\include\dx12\MathHelper.h" />
+    <ClInclude Include="..\include\dx12\UploadBuffer.h" />
+    <ClInclude Include="BoxApp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="d3dApp.cpp" />
-    <ClCompile Include="d3dUtil.cpp" />
-    <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="..\include\dx12\d3dApp.cpp" />
+    <ClCompile Include="..\include\dx12\d3dUtil.cpp" />
+    <ClCompile Include="..\include\dx12\GameTimer.cpp" />
+    <ClCompile Include="..\include\dx12\MathHelper.cpp" />
+    <ClCompile Include="BoxApp.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\color.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
