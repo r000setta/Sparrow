@@ -11,6 +11,9 @@
 
 #include "d3dUtil.h"
 #include "GameTimer.h"
+#include "imgui.h"
+#include "imgui_impl_dx12.h"
+#include "imgui_impl_win32.h"
 
 // Link necessary d3d12 libraries.
 #pragma comment(lib,"d3dcompiler.lib")
@@ -109,6 +112,8 @@ protected:
 
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
+
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvHeap;
 
     D3D12_VIEWPORT mScreenViewport; 
     D3D12_RECT mScissorRect;

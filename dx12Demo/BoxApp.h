@@ -17,6 +17,8 @@ struct Vertex
 struct ObjectConstants
 {
     XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
+    XMFLOAT4 PulseColor;
+    float Time;
 };
 
 class BoxApp:public D3DApp {
