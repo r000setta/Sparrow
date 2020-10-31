@@ -8,6 +8,16 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
+struct VPosData
+{
+    XMFLOAT3 Pos;
+};
+
+struct VColorData
+{
+    XMFLOAT4 Color;
+};
+
 struct Vertex
 {
     XMFLOAT3 Pos;
@@ -16,9 +26,15 @@ struct Vertex
 
 struct ObjectConstants
 {
-    XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
+    //XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
+    XMFLOAT4X4 world = MathHelper::Identity4x4();
     XMFLOAT4 PulseColor;
-    float Time;
+    float Time = 0.0f;
+};
+
+struct PassConstants
+{
+    XMFLOAT4X4 viewProj = MathHelper::Identity4x4();
 };
 
 class BoxApp:public D3DApp {
@@ -31,9 +47,9 @@ public:
 	virtual bool Initialize() override;
 
 protected:
-    virtual void OnResize()override;
-    virtual void Update(const GameTimer& gt)override;
-    virtual void Draw(const GameTimer& gt)override;
+    virtual void OnResize() override;
+    virtual void Update(const GameTimer& gt) override;
+    virtual void Draw(const GameTimer& gt) override;
 
     virtual void OnMouseDown(WPARAM btnState, int x, int y) override;
     virtual void OnMouseUp(WPARAM btnState, int x, int y) override;
@@ -47,10 +63,12 @@ protected:
     void BuildPSO();
 
 private:
+
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
     ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
     std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
+    std::unique_ptr<UploadBuffer<PassConstants>> mPassCB = nullptr;
 
     std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
 
@@ -64,6 +82,7 @@ private:
     XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
     XMFLOAT4X4 mView = MathHelper::Identity4x4();
     XMFLOAT4X4 mProj = MathHelper::Identity4x4();
+
 
     float mTheta = 1.5f * XM_PI;
     float mPhi = XM_PIDIV4;

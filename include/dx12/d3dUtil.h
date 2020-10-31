@@ -162,6 +162,40 @@ struct MeshGeometry
 	// Give it a name so we can look it up by name.
 	std::string Name;
 
+    Microsoft::WRL::ComPtr<ID3DBlob> vPosBufferCpu = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> vColorBufferCpu = nullptr;
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> vPosBufferUpload = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> vColorBufferUpload = nullptr;
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> vPosBufferGpu = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> vColorBufferGpu = nullptr;
+
+    UINT vPosBufferByteSize = 0;
+    UINT vColorBufferByteSize = 0;
+
+    UINT vPosBufferStride = 0;
+    UINT vColorBufferStride = 0;
+
+    D3D12_VERTEX_BUFFER_VIEW GetVPosBuffeView() const
+    {
+        D3D12_VERTEX_BUFFER_VIEW vPosBufferView;
+        vPosBufferView.BufferLocation = vPosBufferGpu->GetGPUVirtualAddress();
+        vPosBufferView.SizeInBytes = vPosBufferByteSize;
+        vPosBufferView.StrideInBytes = vPosBufferStride;
+        return vPosBufferView;
+    }
+
+    D3D12_VERTEX_BUFFER_VIEW GetVColorBufferView() const
+    {
+        D3D12_VERTEX_BUFFER_VIEW vColorBufferView;
+        vColorBufferView.BufferLocation = vColorBufferGpu->GetGPUVirtualAddress();
+        vColorBufferView.SizeInBytes = vColorBufferByteSize;
+        vColorBufferView.StrideInBytes = vColorBufferStride;
+        return vColorBufferView;
+    }
+
+
 	// System memory copies.  Use Blobs because the vertex/index format can be generic.
 	// It is up to the client to cast appropriately.  
 	Microsoft::WRL::ComPtr<ID3DBlob> VertexBufferCPU = nullptr;
@@ -190,7 +224,6 @@ struct MeshGeometry
 		vbv.BufferLocation = VertexBufferGPU->GetGPUVirtualAddress();
 		vbv.StrideInBytes = VertexByteStride;
 		vbv.SizeInBytes = VertexBufferByteSize;
-
 		return vbv;
 	}
 
@@ -207,7 +240,9 @@ struct MeshGeometry
 	// We can free this memory after we finish upload to the GPU.
 	void DisposeUploaders()
 	{
-		VertexBufferUploader = nullptr;
+        vPosBufferUpload = nullptr;
+        vColorBufferUpload = nullptr;
+        //VertexBufferUploader = nullptr;
 		IndexBufferUploader = nullptr;
 	}
 };

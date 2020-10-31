@@ -87,13 +87,8 @@ int D3DApp::Run()
 			continue;
 		}
 
-		// Otherwise, do animation/game stuff.
 		else
         {
-			//ImGui_ImplDX12_NewFrame();
-			//ImGui_ImplWin32_NewFrame();
-			//ImGui::NewFrame();
-
 			mTimer.Tick();
 
 			if( !mAppPaused )
@@ -193,9 +188,9 @@ void D3DApp::OnResize()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(mRtvHeap->GetCPUDescriptorHandleForHeapStart());
 	for (UINT i = 0; i < SwapChainBufferCount; i++)
 	{
-		ThrowIfFailed(mSwapChain->GetBuffer(i, IID_PPV_ARGS(&mSwapChainBuffer[i])));
-		md3dDevice->CreateRenderTargetView(mSwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
-		rtvHeapHandle.Offset(1, mRtvDescriptorSize);
+		ThrowIfFailed(mSwapChain->GetBuffer(i, IID_PPV_ARGS(&mSwapChainBuffer[i])));	//获得交换链中第i个缓冲区
+		md3dDevice->CreateRenderTargetView(mSwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);	//为此缓冲区创建一个RTV
+		rtvHeapHandle.Offset(1, mRtvDescriptorSize);	//偏移到描述符堆的下一个缓冲区
 	}
 
     // Create the depth/stencil buffer and view.
