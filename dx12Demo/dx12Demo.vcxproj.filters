@@ -51,6 +51,15 @@
     <ClInclude Include="..\imgui\imgui_internal.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="FrameResource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapesApp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,10 +98,20 @@
     <ClCompile Include="..\imgui\imgui_widgets.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapesApp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shader\color.hlsl">
+    <None Include="shader\color.hlsl" />
+    <None Include="shader\shapes.hlsl">
       <Filter>shader</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>

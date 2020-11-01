@@ -152,6 +152,9 @@
     <ClInclude Include="..\include\dx12\MathHelper.h" />
     <ClInclude Include="..\include\dx12\UploadBuffer.h" />
     <ClInclude Include="BoxApp.h" />
+    <ClInclude Include="FrameResource.h" />
+    <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="ShapesApp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\imgui\imgui.cpp" />
@@ -165,7 +168,10 @@
     <ClCompile Include="..\include\dx12\GameTimer.cpp" />
     <ClCompile Include="..\include\dx12\MathHelper.cpp" />
     <ClCompile Include="BoxApp.cpp" />
+    <ClCompile Include="FrameResource.cpp" />
+    <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ShapesApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\color.hlsl">
@@ -175,6 +181,11 @@
       </EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </EntryPointName>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\shapes.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

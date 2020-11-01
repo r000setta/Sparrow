@@ -1,5 +1,4 @@
-#include "BoxApp.h"
-
+#include "ShapesApp.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     PSTR cmdLine, int showCmd)
@@ -11,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
     try
     {
-        BoxApp theApp(hInstance);
+        ShapesApp theApp(hInstance);
         if (!theApp.Initialize())
             return 0;
 
