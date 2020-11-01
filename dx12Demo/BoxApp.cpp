@@ -12,6 +12,7 @@ bool BoxApp::Initialize()
     BuildConstantBuffers();
     BuildRootSignature();
     BuildShadersAndInputLayout();
+    BuildRenderItems();
     //BuildBoxGeometry();
     BuildGeometry();
     BuildPSO();
@@ -49,6 +50,9 @@ void BoxApp::OnResize()
 
 void BoxApp::Update(const GameTimer& gt)
 {
+    ObjectConstants objConstants;
+    PassConstants passConstants;
+
     // Convert Spherical to Cartesian coordinates.
     float x = mRadius * sinf(mPhi) * cosf(mTheta);
     float z = mRadius * sinf(mPhi) * sinf(mTheta);
@@ -60,26 +64,24 @@ void BoxApp::Update(const GameTimer& gt)
     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+
+    for (auto& e : mAllRitems) {
+        auto world = e->World;
+        XMMATRIX w = XMLoadFloat4x4(&world);
+        XMStoreFloat4x4(&objConstants.world, XMMatrixTranspose(w));
+        objConstants.Time = gt.TotalTime();
+        objConstants.PulseColor = XMFLOAT4(Colors::Red);
+        mObjectCB->CopyData(e->objCBIndex, objConstants);
+    }
     XMStoreFloat4x4(&mView, view);
 
-    XMMATRIX world = XMLoadFloat4x4(&mWorld);
     XMMATRIX proj = XMLoadFloat4x4(&mProj);
     //XMMATRIX worldViewProj = world * view * proj;
     XMMATRIX viewProj = view * proj;
-    XMMATRIX wvp = world* view* proj;
     // Update the constant buffer with the latest worldViewProj matrix.
-    ObjectConstants objConstants;
-    PassConstants passConstants;
 
     XMStoreFloat4x4(&passConstants.viewProj, XMMatrixTranspose(viewProj));
     mPassCB->CopyData(0, passConstants);
-
-    objConstants.Time = gt.TotalTime();
-    objConstants.PulseColor = XMFLOAT4(Colors::Red);
-
-    //XMStoreFloat4x4(&objConstants.world, XMMatrixTranspose(world));
-    XMStoreFloat4x4(&objConstants.world, XMMatrixTranspose(wvp));
-    mObjectCB->CopyData(0, objConstants);
 }
 
 void BoxApp::Draw(const GameTimer& gt)
@@ -242,8 +244,12 @@ void BoxApp::OnMouseMove(WPARAM btnState, int x, int y)
 
 void BoxApp::BuildDescriptorHeaps()
 {
+    UINT objCount = (UINT)mAllRitems.size();
+
+    UINT numDescriptors = (objCount + 1);
+
     D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-    cbvHeapDesc.NumDescriptors = 2;
+    cbvHeapDesc.NumDescriptors = numDescriptors;
     cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     cbvHeapDesc.NodeMask = 0;
@@ -253,32 +259,52 @@ void BoxApp::BuildDescriptorHeaps()
 
 void BoxApp::BuildConstantBuffers()
 {
-    mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), 1, true);
-
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-    D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB->Resource()->GetGPUVirtualAddress();
-    // Offset to the ith object constant buffer in the buffer.
-    int boxCBufIndex = 0;
-    cbAddress += boxCBufIndex * objCBByteSize;
+    UINT objCount = (UINT)mAllRitems.size();
+    auto objectCB = std::make_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), objCBByteSize, true);
+
+    for (int i = 0; i < objCount; ++i) {
+        D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->Resource()->GetGPUVirtualAddress();
+        int objCBElementIdx = i;
+        objCBAddress += objCBElementIdx * objCBByteSize;
+        int heapIdx = i;
+        auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+        handle.Offset(heapIdx, mCbvSrvUavDescriptorSize);
+        D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+        cbvDesc.BufferLocation = objCBAddress;
+        cbvDesc.SizeInBytes = objCBByteSize;
+        md3dDevice->CreateConstantBufferView(&cbvDesc, handle);
+    }
+
+    //mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), 1, true);
+
+    //UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+    //D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB->Resource()->GetGPUVirtualAddress();
+    //// Offset to the ith object constant buffer in the buffer.
+    //int boxCBufIndex = 0;
+    //cbAddress += boxCBufIndex * objCBByteSize;
+
+    //int heapIdx = 0;
+    //auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+    //handle.Offset(heapIdx, mCbvSrvUavDescriptorSize);
+
+    //D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+    //cbvDesc.BufferLocation = cbAddress;
+    //cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+    ///*   md3dDevice->CreateConstantBufferView(
+    //       &cbvDesc,
+    //       mCbvHeap->GetCPUDescriptorHandleForHeapStart());*/
+
+    //md3dDevice->CreateConstantBufferView(
+    //    &cbvDesc,
+    //    handle);
+
+    //heapIdx = 1;
 
     int heapIdx = 0;
-    auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
-    handle.Offset(heapIdx, mCbvSrvUavDescriptorSize);
-
-    D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-    cbvDesc.BufferLocation = cbAddress;
-    cbvDesc.SizeInBytes = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-    /*   md3dDevice->CreateConstantBufferView(
-           &cbvDesc,
-           mCbvHeap->GetCPUDescriptorHandleForHeapStart());*/
-
-    md3dDevice->CreateConstantBufferView(
-        &cbvDesc,
-        handle);
-
-    heapIdx = 1;
 
     mPassCB = std::make_unique<UploadBuffer<PassConstants>>(md3dDevice.Get(), 1, true);
 
@@ -287,7 +313,7 @@ void BoxApp::BuildConstantBuffers()
     int passCbElementIdx = 0;
     passCBAddress += passCbElementIdx * passCBBytesSize;
 
-    handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+    auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
     handle.Offset(heapIdx, mCbvSrvUavDescriptorSize);
 
     D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc1;
@@ -606,4 +632,35 @@ void BoxApp::BuildGeometry()
 
     mGeo->DrawArgs["box"] = boxSubmesh;
     mGeo->DrawArgs["sphere"] = sphereSubmesh;
+}
+
+void BoxApp::BuildRenderItems()
+{
+    auto boxRitem = std::make_unique<RenderItem>();
+    XMStoreFloat4x4(&(boxRitem->World), XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
+    boxRitem->objCBIndex = 0;
+    boxRitem->IndexCount = mGeo->DrawArgs["box"].IndexCount;
+    boxRitem->BaseVertexLocation = mGeo->DrawArgs["box"].BaseVertexLocation;
+    boxRitem->StartIndexLocation = mGeo->DrawArgs["box"].StartIndexLocation;
+    boxRitem->Geo = mGeo.get();
+    mAllRitems.push_back(std::move(boxRitem));
+}
+
+void BoxApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+{
+    UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+    for (size_t i = 0; i < ritems.size(); ++i) {
+        auto ritem = ritems[i];
+        cmdList->IASetVertexBuffers(0, 1, &ritem->Geo->VertexBufferView());
+        cmdList->IASetIndexBuffer(&ritem->Geo->IndexBufferView());
+        cmdList->IASetPrimitiveTopology(ritem->PrimitiveType);
+
+        UINT cbvIdx = ritem->objCBIndex;
+        auto handle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
+        handle.Offset(cbvIdx, mCbvSrvUavDescriptorSize);
+
+        cmdList->SetGraphicsRootDescriptorTable(0, handle);
+        cmdList->DrawIndexedInstanced(ritem->IndexCount,1,ritem->StartIndexLocation,ritem.s)
+    }
 }

@@ -39,6 +39,21 @@ struct PassConstants
     XMFLOAT4X4 viewProj = MathHelper::Identity4x4();
 };
 
+struct RenderItem
+{
+    RenderItem() = default;
+    XMFLOAT4X4 World = MathHelper::Identity4x4();
+
+    UINT objCBIndex = -1;
+    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+    MeshGeometry* Geo = nullptr;
+
+    UINT IndexCount = 0;
+    UINT StartIndexLocation = 0;
+    UINT BaseVertexLocation = 0;
+};
+
 class BoxApp :public D3DApp {
 public:
     BoxApp(HINSTANCE hInstance) :D3DApp(hInstance) {}
@@ -65,6 +80,8 @@ protected:
     void BuildGeometry();
     void BuildPSO();
 
+    void BuildRenderItems();
+    void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 private:
 
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
@@ -86,6 +103,8 @@ private:
     XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
     XMFLOAT4X4 mView = MathHelper::Identity4x4();
     XMFLOAT4X4 mProj = MathHelper::Identity4x4();
+
+    std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
 
     float mTheta = 1.5f * XM_PI;
