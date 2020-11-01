@@ -3,6 +3,8 @@
 #include "UploadBuffer.h"
 #include "MathHelper.h"
 
+#include "GeometryGenerator.h"
+
 using Microsoft::WRL::ComPtr;
 
 using namespace DirectX;
@@ -37,14 +39,14 @@ struct PassConstants
     XMFLOAT4X4 viewProj = MathHelper::Identity4x4();
 };
 
-class BoxApp:public D3DApp {
+class BoxApp :public D3DApp {
 public:
     BoxApp(HINSTANCE hInstance) :D3DApp(hInstance) {}
-	BoxApp(const BoxApp& rhs) = delete;
-	BoxApp& operator=(const BoxApp& rhs) = delete;
+    BoxApp(const BoxApp& rhs) = delete;
+    BoxApp& operator=(const BoxApp& rhs) = delete;
     ~BoxApp() {}
 
-	virtual bool Initialize() override;
+    virtual bool Initialize() override;
 
 protected:
     virtual void OnResize() override;
@@ -60,6 +62,7 @@ protected:
     void BuildRootSignature();
     void BuildShadersAndInputLayout();
     void BuildBoxGeometry();
+    void BuildGeometry();
     void BuildPSO();
 
 private:
@@ -71,6 +74,7 @@ private:
     std::unique_ptr<UploadBuffer<PassConstants>> mPassCB = nullptr;
 
     std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
+    std::unique_ptr<MeshGeometry> mGeo = nullptr;
 
     ComPtr<ID3DBlob> mvsByteCode = nullptr;
     ComPtr<ID3DBlob> mpsByteCode = nullptr;

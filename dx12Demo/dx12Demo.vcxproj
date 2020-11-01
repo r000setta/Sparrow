@@ -152,6 +152,7 @@
     <ClInclude Include="..\include\dx12\MathHelper.h" />
     <ClInclude Include="..\include\dx12\UploadBuffer.h" />
     <ClInclude Include="BoxApp.h" />
+    <ClInclude Include="GeometryGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\imgui\imgui.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="..\include\dx12\GameTimer.cpp" />
     <ClCompile Include="..\include\dx12\MathHelper.cpp" />
     <ClCompile Include="BoxApp.cpp" />
+    <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
