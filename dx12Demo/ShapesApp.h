@@ -70,6 +70,7 @@ private:
     void BuildRootSignature();
     void BuildShadersAndInputLayout();
     void BuildShapeGeometry();
+    void BuildSkullGeometry();
     void BuildPSOs();
     void BuildFrameResources();
     void BuildRenderItems();
