@@ -10,6 +10,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
     try
     {
+        //ShapesApp theApp(hInstance);
         ShapesApp theApp(hInstance);
         if (!theApp.Initialize())
             return 0;

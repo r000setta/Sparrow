@@ -155,6 +155,7 @@
     <ClInclude Include="FrameResource.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="ShapesApp.h" />
+    <ClInclude Include="Waves.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\imgui\imgui.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShapesApp.cpp" />
+    <ClCompile Include="Waves.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\color.hlsl">
@@ -191,6 +193,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\LightingUtil.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\waves.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

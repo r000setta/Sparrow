@@ -60,6 +60,9 @@
     <ClInclude Include="ShapesApp.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Waves.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -107,6 +110,9 @@
     <ClCompile Include="ShapesApp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Waves.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\color.hlsl" />
@@ -114,6 +120,9 @@
       <Filter>shader</Filter>
     </None>
     <None Include="shader\LightingUtil.hlsl">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="shader\waves.hlsl">
       <Filter>shader</Filter>
     </None>
   </ItemGroup>
